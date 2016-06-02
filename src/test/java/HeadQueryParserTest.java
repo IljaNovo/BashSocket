@@ -19,7 +19,6 @@ public class HeadQueryParserTest {
 		} catch (UnknownHostException e) {
 		
 		} catch (IOException e) {
-		
 		}
 	}
 	
@@ -31,9 +30,7 @@ public class HeadQueryParserTest {
 			HeadQueryParser hqp = new HeadQueryParser(bm.getHeadPage("43"));
 			Assert.assertEquals(hqp.getContentType(), "text/html");
 		} catch (UnknownHostException e) {
-		
 		} catch (IOException e) {
-		
 		}
 	}
 	
@@ -45,9 +42,7 @@ public class HeadQueryParserTest {
 			HeadQueryParser hqp = new HeadQueryParser(bm.getHeadPage("43"));
 			Assert.assertEquals(hqp.getStatusLoading(), "200");
 		} catch (UnknownHostException e) {
-		
 		} catch (IOException e) {
-		
 		}
 	}
 	
@@ -59,9 +54,7 @@ public class HeadQueryParserTest {
 			HeadQueryParser hqp = new HeadQueryParser(bm.getHeadPage("43"));
 			Assert.assertEquals(hqp.getTransferEncoding(), "chunked");
 		} catch (UnknownHostException e) {
-		
 		} catch (IOException e) {
-		
 		}
 	}
 }

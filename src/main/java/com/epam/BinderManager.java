@@ -22,21 +22,17 @@ public class BinderManager {
 		String answer = "";
 		
 		try (Socket connection = new Socket(InetAddress.getByName(this.host), this.port);
-				  PrintWriter out = new PrintWriter(connection.getOutputStream());
-					BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()))
-				) {
+			PrintWriter out = new PrintWriter(connection.getOutputStream());
+			BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()))
+			) {
 				out.print(querry);
 				out.flush();
-				
 				answer = this.readQueryHead(input);
-				
 			} catch(UnknownHostException e) {
 				throw new UnknownHostException("Хоста не существует");
-			
 			} catch(IOException e) {
 				throw new IOException("Невозможно подключиться");
 			}
-		
 		return answer;
 	}
 	
@@ -62,18 +58,15 @@ public class BinderManager {
 				out.flush();
 				
 				String buffer = "";
-				 
 				while ((buffer = input.readLine()) != null) { 
 					answer += buffer + "\n";
 				}
-				
 			} catch(UnknownHostException e) {
 				throw new UnknownHostException("Хоста не существует");
 			
 			} catch(IOException e) {
 				throw new IOException("Невозможно подключиться");
 			}
-		
 		return answer;
 	}
 }
