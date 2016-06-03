@@ -10,7 +10,7 @@ public class BashParser {
 	public String getArticleText() {
 		String pattern = "<div class=\"text\">";
 		int startIndex = this.bashHtmlPage.lastIndexOf(pattern) +
-				pattern.length();
+			pattern.length();
 		int endIndex = startIndex;
 		
 		while(endIndex != -1) {
@@ -22,10 +22,10 @@ public class BashParser {
 		}
 		
 		return this.bashHtmlPage
-					.substring(startIndex, endIndex)
-					.replace("<br>", "\n")
-					.replace("&quot;", "\"")
-					.replace("&lt;", "<")
-					.replace("&gt;", ">");
+			.substring(startIndex, endIndex)
+			.replace("<br>", "\n")
+			.replace("&quot;", "\"")
+			.replace("&lt;", "<")
+			.replace("&gt;", ">");
 	}
 }
