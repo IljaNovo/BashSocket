@@ -2,8 +2,10 @@ package com.epam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -17,17 +19,26 @@ public class BinderManager {
 		this.port = port;
 	}
 	
-	public String getHeadPage(String idPage) throws UnknownHostException, IOException{
-		String querry = "GET /quote/" + idPage + " HTTP/1.1\nHost:" + this.host + "\n\n";
+	public String executeQuery(String queryParam, String idPage) throws UnknownHostException, IOException {
+		String query = queryParam + " /quote/" + idPage + " HTTP/1.1\nHost:" + this.host + "\n\n";
+		return this.getPage(query);
+	}
+	
+	private String getPage(String query) throws UnknownHostException, IOException {
 		String answer = "";
 		
 		try (Socket connection = new Socket(InetAddress.getByName(this.host), this.port);
 			PrintWriter out = new PrintWriter(connection.getOutputStream());
-			BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()))
+				
 			) {
-				out.print(querry);
+				out.print(query);
 				out.flush();
-				answer = this.readQueryHead(input);
+						
+				answer = this.readHead(connection.getInputStream());			
+				HeadQueryParser hqp = new HeadQueryParser(answer);
+				
+				answer += this.readBody(connection.getInputStream(), hqp.getCharset());
+				
 			} catch(UnknownHostException e) {
 				throw new UnknownHostException("Хоста не существует");
 			} catch(IOException e) {
@@ -36,37 +47,36 @@ public class BinderManager {
 		return answer;
 	}
 	
-	public String readQueryHead(BufferedReader input) throws IOException {
-		int count = 0;
+	private String readBody(InputStream input, String encoding) throws IOException {
 		String header = "";
-		while (count < 12) {
-			header += input.readLine() + "\n";
-			++count;
+		String buf = "";
+		BufferedReader bodyReader = new BufferedReader(new InputStreamReader(input, encoding));
+		while ((buf = bodyReader.readLine()) != null) {
+			header += buf + '\n';
 		}	
 		return header;
 	}
 	
-	public String getHtmlPage(String idPage, String encoding) throws UnknownHostException, IOException {
-		String querry = "GET /quote/" + idPage + " HTTP/1.1\nHost:" + this.host + "\n\n";
-		String answer = "";
-		
-		try (Socket connection = new Socket(InetAddress.getByName(this.host), this.port);
-				  PrintWriter out = new PrintWriter(connection.getOutputStream());
-					BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream(), encoding))
-				) {
-				out.print(querry);
-				out.flush();
-				
-				String buffer = "";
-				while ((buffer = input.readLine()) != null) { 
-					answer += buffer + "\n";
-				}
-			} catch(UnknownHostException e) {
-				throw new UnknownHostException("Хоста не существует");
-			
-			} catch(IOException e) {
-				throw new IOException("Невозможно подключиться");
-			}
-		return answer;
+	private String readHead(InputStream input) throws IOException {
+		String header = "";
+		char buf = ' ';
+		while (!this.validateEnd(header)) {
+			buf = (char)input.read();
+			header += buf;
+		}	
+		return header;
+	}
+	
+	private boolean validateEnd(String header) {
+		if (header.length() < 4) {
+			return false;
+		}
+		if ((header.charAt(header.length() - 1) == '\n') &&
+			(header.charAt(header.length() - 2) == '\r') &&
+			(header.charAt(header.length() - 3) == '\n') &&
+			(header.charAt(header.length() - 4) == '\r')) {
+			return true;
+		}
+		return false;
 	}
 }

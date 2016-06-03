@@ -33,7 +33,7 @@ public class HeadQueryParser {
 		int index = this.headQuery.indexOf("Transfer-Encoding");
 		index = index + 19;
 		String answer = "";
-		while (this.headQuery.charAt(index) != '\n') {
+		while (this.headQuery.charAt(index) != '\r') {
 			answer += this.headQuery.charAt(index);
 			++index;
 		}
@@ -44,7 +44,7 @@ public class HeadQueryParser {
 		int index = this.headQuery.indexOf("charset");
 		index = index + 8;
 		String answer = "";
-		while (this.headQuery.charAt(index) != '\n') {
+		while (this.headQuery.charAt(index) != '\r') {
 			answer += this.headQuery.charAt(index);
 			++index;
 		}
