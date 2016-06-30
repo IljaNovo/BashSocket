@@ -12,24 +12,13 @@ public class BinderManagerTest {
 	@Test
 	public void testNotPage() {
 		BinderManager bm = new BinderManager("bas.im", 80);
-		
-		try {
-			bm.executeQuery("GET", "-43");
-		} catch (UnknownHostException e) {
-			Assert.assertTrue(true);
-		} catch (IOException e) {
-		}
+		String str = bm.executeQuery("GET", "-43");
+		Assert.assertEquals(bm.executeQuery("GET", "-43"), "Невозможно подключиться");
 	}
 	
 	@Test
 	public void testGetPage() {
 		BinderManager bm = new BinderManager("bas.im", 80);
-		
-		try {
-			bm.executeQuery("GET", "80");
-			Assert.assertTrue(true);
-		} catch (UnknownHostException e) {
-		} catch (IOException e) {
-		}
+		Assert.assertNotEquals(bm.executeQuery("GET", "80"), "Хоста не существует");
 	}
 }

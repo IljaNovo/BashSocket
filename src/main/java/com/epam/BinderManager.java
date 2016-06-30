@@ -19,12 +19,12 @@ public class BinderManager {
 		this.port = port;
 	}
 	
-	public String executeQuery(String queryParam, String idPage) throws UnknownHostException, IOException {
+	public String executeQuery(String queryParam, String idPage) {
 		String query = queryParam + " /quote/" + idPage + " HTTP/1.1\nHost:" + this.host + "\n\n";
 		return this.getPage(query);
 	}
 	
-	private String getPage(String query) throws UnknownHostException, IOException {
+	private String getPage(String query) {
 		String answer = "";
 		
 		try (Socket connection = new Socket(InetAddress.getByName(this.host), this.port);
@@ -40,9 +40,9 @@ public class BinderManager {
 				answer += this.readBody(connection.getInputStream(), hqp.getCharset());
 				
 			} catch(UnknownHostException e) {
-				throw new UnknownHostException("Хоста не существует");
+				return "Хоста не существует";
 			} catch(IOException e) {
-				throw new IOException("Невозможно подключиться");
+				return "Невозможно подключиться";
 			}
 		return answer;
 	}
